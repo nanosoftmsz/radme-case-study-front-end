@@ -1,28 +1,19 @@
 import React, { useState } from "react";
-import { Avatar, Button, Drawer, Dropdown, Layout, Menu } from "antd";
+import { Avatar, Button, Dropdown, Layout, Menu } from "antd";
 import { LogoutOutlined, MenuOutlined, UserOutlined } from "@ant-design/icons";
 import { Link, useHistory } from "react-router-dom";
 
 import { BaseAPI } from "../utils/Api";
-import MenuTopics from "../container/MenuTopics";
 import AppRoutes from "../routes";
 import "../styles/Navbar.less";
 import "../styles/Sidebar.less";
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Content, Footer } = Layout;
 
 const AdminLayout = () => {
   const history = useHistory();
 
-  const [loading, setLoading] = useState(false);
-  const [navIsVisible, setNavIsVisible] = useState(false);
-
-  const closeSidenav = () => {
-    setNavIsVisible(false);
-  };
-
   const logout = () => {
-    setLoading(true);
     BaseAPI.get("/auth/logout", {
       headers: {
         Authorization: "Bearer " + localStorage.getItem("accessToken"),
@@ -35,12 +26,7 @@ const AdminLayout = () => {
       .catch(() => {
         localStorage.clear();
         history.push("/login");
-      })
-      .finally(() => setLoading(false));
-  };
-
-  const openSidenav = () => {
-    setNavIsVisible(true);
+      });
   };
 
   const menu = (
@@ -70,7 +56,7 @@ const AdminLayout = () => {
 
       <Layout>
         <Header className='site-layout-sub-header-background '>
-          <Button className='menu' type='primary' icon={<MenuOutlined />} onClick={openSidenav} />
+          <Button className='menu' type='primary' icon={<MenuOutlined />} />
           <Dropdown className='logout-btn' overlay={menu} placement='topRight' arrow>
             <Avatar style={{ backgroundColor: "#039be5" }} icon={<UserOutlined />} />
           </Dropdown>
