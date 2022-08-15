@@ -1,9 +1,8 @@
 import { notification } from 'antd';
 
-const Notification = (message, description, type) => {
-    notification[type]({
-        message: message,
-        description: description
-    });
-}
- export default Notification;
+const Notification = (message, type) => {
+  notification[type]({
+    message: message,
+  });
+};
+export default Notification;

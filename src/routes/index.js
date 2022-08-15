@@ -1,7 +1,6 @@
-import { Switch, Route } from "react-router-dom";
-import AdminLayout from "../layouts/AdminLayout";
+import { Switch, Route } from 'react-router-dom';
 
-import Home from "../pages/Home";
+import Home from '../pages/Home';
 
 const AppRoutes = () => {
   return (

@@ -1,9 +1,9 @@
-import axios from "axios";
+import axios from 'axios';
 
 const BaseAPI = axios.create({
-  baseURL: process.env.REACT_APP_ecommerce_admin,
+  baseURL: process.env.REACT_APP_CASE_STUDY_USER,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 

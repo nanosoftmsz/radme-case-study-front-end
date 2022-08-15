@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { Form, Input, Button, Layout, Divider } from "antd";
-import { KeyOutlined, LoadingOutlined } from "@ant-design/icons";
-import { useHistory, Link } from "react-router-dom";
+import React, { useState } from 'react';
+import { Form, Input, Button, Layout, Divider } from 'antd';
+import { KeyOutlined, LoadingOutlined } from '@ant-design/icons';
+import { useHistory, Link } from 'react-router-dom';
 
-import "../styles/PageStyles/Login.less";
+import '../styles/PageStyles/Login.less';
 
 const { Header, Content } = Layout;
 
@@ -14,15 +14,14 @@ function Login() {
   const [loading, setLoading] = useState(false);
 
   const onFinish = (values) => {
-    localStorage.setItem("accessToken", "lsdkfjlsdkf");
-    history.push("/");
+    localStorage.setItem('accessToken', 'lsdkfjlsdkf');
+    history.push('/');
   };
 
   return (
     <Layout className='login-layout'>
       <Header className='login-header'>
-        <div>dslkfj</div>
-        <div className='systemlogin-text'>System Login</div>
+        <div className='systemlogin-text'>Welcome</div>
       </Header>
       <div className='head-divider'>
         <Divider />
@@ -36,12 +35,12 @@ function Login() {
             labelCol={{ span: 24 }}
             rules={[
               {
-                type: "email",
-                message: "The input is not valid E-mail!",
+                type: 'email',
+                message: 'The input is not valid E-mail!',
               },
               {
                 required: true,
-                message: "Please input your E-mail!",
+                message: 'Please input your E-mail!',
               },
             ]}>
             <Input placeholder='Enter your email' />
@@ -53,7 +52,7 @@ function Login() {
             rules={[
               {
                 required: true,
-                message: "Please input your Password!",
+                message: 'Please input your Password!',
               },
             ]}>
             <Input.Password placeholder='Enter your password' />
@@ -64,17 +63,7 @@ function Login() {
             </Button>
           </Form.Item>
           <Form.Item>
-            <div style={{ textAlign: "center" }}>
-              <Link className='login-form-forgot' to='/forgot-password'>
-                <span>
-                  <KeyOutlined />
-                </span>
-                Forgot password?
-              </Link>
-            </div>
-            <div className='fp-divider'>
-              <Divider />
-            </div>
+            <Link to='/register'>New here? Please register.</Link>
           </Form.Item>
         </Form>
       </Content>
