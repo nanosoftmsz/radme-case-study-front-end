@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { Form, Input, Button, Layout, Select, DatePicker, Row, Col, Radio } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useHistory, Link } from 'react-router-dom';
+import moment from 'moment';
 
 import { Country, MedicalSchools, residencyYear } from '../utils/Constants';
+import Notification from '../components/controls/Notification';
+import { BaseAPI } from '../utils/Api';
 
 import '../styles/PageStyles/Login.less';
-import Notification from '../components/controls/Notification';
 
 const { Header, Content } = Layout;
 const { Option } = Select;
@@ -18,24 +20,35 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
 
   const onFinish = (values) => {
-    console.log(values);
-    Notification('hello there', 'success');
+    setLoading(true);
     const body = {
       f_name: values.f_name,
       l_name: values.l_name,
       email: values.email,
       med_school: values.med_school,
-      gender: 'Male',
-      dob: '1997-03-01',
-      year_of_graduation: '2020',
-      password: '1234',
-      residency: 'ABC',
-      state: 'Texas',
-      country: 'USA',
+      gender: values.gender,
+      dob: moment(values.dob).format('YYYY-MM-DD'),
+      year_of_graduation: moment(values.graduation_year).format('YYYY'),
+      password: values.password,
+      residency: values.residency_year,
+      state: values.country,
+      country: values.country,
       user_type: 2,
     };
 
-    // BaseAPI.post('/auth/signup')
+    BaseAPI.post('/auth/signup', body)
+      .then((res) => {
+        history.push('/login');
+        Notification('Account created successfully. Please login now', 'success');
+      })
+      .catch((err) => {
+        if (err?.response?.data?.message) {
+          Notification(err?.response?.data?.message, 'error');
+        } else {
+          Notification('Something went wrong!', 'error');
+        }
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -43,15 +56,15 @@ const Register = () => {
       <Header className='login-header'>
         <div className='systemlogin-text'>Create Account</div>
       </Header>
-      <Content className='login-form'>
-        <Form form={form} onFinish={onFinish} layout='vertical'>
+      <Content>
+        <Form className='login-form' form={form} onFinish={onFinish} layout='vertical' style={{ marginTop: '12em' }}>
           <Row gutter={[16, 4]}>
-            <Col xs={24} sm={12}>
+            <Col xs={24}>
               <Form.Item name='f_name' label='First Name' rules={[{ required: true, message: 'First name is required' }]}>
                 <Input />
               </Form.Item>
             </Col>
-            <Col xs={24} sm={12}>
+            <Col xs={24}>
               <Form.Item name='l_name' label='Last Name' rules={[{ required: true, message: 'Last name is required' }]}>
                 <Input />
               </Form.Item>

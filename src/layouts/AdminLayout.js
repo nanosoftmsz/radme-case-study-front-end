@@ -1,12 +1,11 @@
-import React, { useState } from "react";
-import { Avatar, Button, Dropdown, Layout, Menu } from "antd";
-import { LogoutOutlined, MenuOutlined, UserOutlined } from "@ant-design/icons";
-import { Link, useHistory } from "react-router-dom";
+import { Avatar, Button, Dropdown, Layout, Menu } from 'antd';
+import { LogoutOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons';
+import { Link, useHistory } from 'react-router-dom';
 
-import { BaseAPI } from "../utils/Api";
-import AppRoutes from "../routes";
-import "../styles/Navbar.less";
-import "../styles/Sidebar.less";
+import AppRoutes from '../routes';
+
+import '../styles/Navbar.less';
+import '../styles/Sidebar.less';
 
 const { Header, Content, Footer } = Layout;
 
@@ -14,19 +13,8 @@ const AdminLayout = () => {
   const history = useHistory();
 
   const logout = () => {
-    BaseAPI.get("/auth/logout", {
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("accessToken"),
-      },
-    })
-      .then(() => {
-        localStorage.clear();
-        history.push("/login");
-      })
-      .catch(() => {
-        localStorage.clear();
-        history.push("/login");
-      });
+    localStorage.clear();
+    history.push('/login');
   };
 
   const menu = (
@@ -37,7 +25,7 @@ const AdminLayout = () => {
         </Menu.Item>
       </Link>
 
-      <Menu.Item key='3' onClick={logout} icon={<LogoutOutlined />}>
+      <Menu.Item key='2' onClick={logout} icon={<LogoutOutlined />}>
         Logout
       </Menu.Item>
     </Menu>
@@ -58,15 +46,15 @@ const AdminLayout = () => {
         <Header className='site-layout-sub-header-background '>
           <Button className='menu' type='primary' icon={<MenuOutlined />} />
           <Dropdown className='logout-btn' overlay={menu} placement='topRight' arrow>
-            <Avatar style={{ backgroundColor: "#039be5" }} icon={<UserOutlined />} />
+            <Avatar style={{ backgroundColor: '#039be5' }} icon={<UserOutlined />} />
           </Dropdown>
         </Header>
-        <Content style={{ margin: "24px 24px 0 24px" }}>
+        <Content style={{ margin: '24px 24px 0 24px' }}>
           <div className='site-layout-background'>
             <AppRoutes />
           </div>
         </Content>
-        <Footer style={{ textAlign: "center" }}>RadMe ©{new Date().getFullYear()} Created by NanoSoft</Footer>
+        <Footer style={{ textAlign: 'center' }}>RadMe ©{new Date().getFullYear()} Created by NanoSoft</Footer>
       </Layout>
     </Layout>
   );

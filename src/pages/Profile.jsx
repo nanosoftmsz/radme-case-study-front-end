@@ -1,20 +1,35 @@
-import { Tabs } from 'antd';
+import { useEffect } from 'react';
+import { Typography } from 'antd';
+import { useHistory } from 'react-router-dom';
 
-import ProfileInformation from './ProfileInformation';
-import ResetPassword from './ResetPassword';
+import { BaseAPI } from '../utils/Api';
+import ErrorHandler from '../utils/ErrorHandler';
+import Notification from '../components/controls/Notification';
 
-const { TabPane } = Tabs;
+const { Title } = Typography;
 
 const Profile = () => {
+  const history = useHistory();
+  useEffect(() => {
+    (async () => {
+      BaseAPI.get(`/auth/profile/${localStorage.getItem('i')}`, { headers: { Authorization: `Bearer ${localStorage.getItem('at')}` } })
+        .then((res) => {
+          console.log(res.data.data);
+        })
+        .catch((err) => {
+          if (err?.response?.data?.message) {
+            ErrorHandler(err?.response?.data?.message, history);
+          } else {
+            Notification('Something went wrong', 'error');
+          }
+        });
+    })();
+  }, []);
+
   return (
-    <Tabs defaultActiveKey='1' centered>
-      <TabPane tab='Profile Information' key='1'>
-        <ProfileInformation />
-      </TabPane>
-      <TabPane tab='Reset Password' key='2'>
-        <ResetPassword />
-      </TabPane>
-    </Tabs>
+    <Title level={2} className='center'>
+      Profile Information
+    </Title>
   );
 };
 
