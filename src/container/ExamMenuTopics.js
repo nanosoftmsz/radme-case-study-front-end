@@ -1,11 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { Menu } from "antd";
-import { Link, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { Menu } from 'antd';
+import { Link, useHistory, useLocation } from 'react-router-dom';
+
+import { BaseAPI } from '../utils/Api';
+import ErrorHandler from '../utils/ErrorHandler';
+import Notification from '../components/controls/Notification';
 
 const ExamMenuTopics = ({ onClick }) => {
   const location = useLocation();
+  const history = useHistory();
 
-  const [path, setPath] = useState("");
+  const [path, setPath] = useState('');
+  const [questionList, setQuestionList] = useState([]);
 
   useEffect(() => {
     setPath(location.pathname);
@@ -14,9 +20,24 @@ const ExamMenuTopics = ({ onClick }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
+  useEffect(() => {
+    BaseAPI.get('/question', { header: { Authorization: `Bearer ${localStorage.getItem('at')}` } })
+      .then((res) => {
+        console.log(res.data.data);
+        setQuestionList(res.data.data);
+      })
+      .catch((err) => {
+        if (err?.response?.data?.message) {
+          ErrorHandler(err?.response?.data?.message, history);
+        } else {
+          Notification('Something went wrong! Please try again later', 'error');
+        }
+      });
+  }, []);
+
   return (
     <div>
-      <Menu mode='inline' selectedKeys={[path.split("/")[2]]} onClick={() => onClick()}>
+      <Menu mode='inline' selectedKeys={[path.split('/')[2]]} onClick={() => onClick()}>
         <Menu.Item key='1'>
           Case Study 1 <Link to='/exam-interface/1' />
         </Menu.Item>

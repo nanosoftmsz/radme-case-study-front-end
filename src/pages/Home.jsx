@@ -15,7 +15,6 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
 
   const onFinish = (values) => {
-    console.log('im here');
     setLoading(true);
 
     const body = {
@@ -26,7 +25,8 @@ const Home = () => {
 
     BaseAPI.post('/skill-test/create', body, { headers: { Authorization: `Bearer ${localStorage.getItem('at')}` } })
       .then((res) => {
-        console.log(res);
+        localStorage.setItem('qi', res.data.data.id);
+        localStorage.setItem('t', res.data.data.start_time);
       })
       .catch((err) => {
         if (err?.response?.data?.message) {
