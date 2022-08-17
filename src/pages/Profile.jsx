@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Button, Col, DatePicker, Form, Input, Radio, Row, Select, Typography } from 'antd';
+import { Button, Col, DatePicker, Form, Input, Radio, Row, Select, Spin, Typography } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import { BaseAPI } from '../utils/Api';
 import ErrorHandler from '../utils/ErrorHandler';
@@ -20,6 +20,7 @@ const Profile = () => {
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
       BaseAPI.get(`/auth/profile/${localStorage.getItem('i')}`, { headers: { Authorization: `Bearer ${localStorage.getItem('at')}` } })
         .then((res) => {
           console.log(res.data.data);
@@ -29,8 +30,8 @@ const Profile = () => {
             email: res.data.data.email,
             med_school: res.data.data.user_info.med_school,
             gender: res.data.data.user_info.gender,
-            // dob: moment(res.data.data.user_info.dob).format('YYYY-MM-DD'),
-            // graduation_year: res.data.data.user_info.year_of_graduation,
+            dob: moment(res.data.data.user_info.dob),
+            graduation_year: moment(res.data.data.user_info.year_of_graduation),
             residency_year: res.data.data.user_info.residency,
             country: res.data.data.user_info.country,
           });
@@ -41,16 +42,44 @@ const Profile = () => {
           } else {
             Notification('Something went wrong', 'error');
           }
-        });
+        })
+        .finally(() => setLoading(false));
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onFinish = (values) => {
-    console.log(values);
+    setLoading(true);
+
+    const body = {
+      f_name: values.f_name,
+      l_name: values.l_name,
+      med_school: values.med_school,
+      gender: values.gender,
+      dob: moment(values.dob).format('YYYY-MM-DD'),
+      year_of_graduation: moment(values.graduation_year).format('YYYY'),
+      residency: values.residency_year,
+      state: values.country,
+      country: values.country,
+      image: 'https://res.cloudinary.com/dprw5csz6/image/upload/v1629142999/360_F_346936114_RaxE6OQogebgAWTalE1myseY1Hbb5qPM_x59s0i.jpg',
+    };
+
+    BaseAPI.patch('/auth/profile', body, { headers: { Authorization: `Bearer ${localStorage.getItem('at')}` } })
+      .then(() => {
+        Notification('Profile information updated successfully!', 'success');
+      })
+      .catch((err) => {
+        if (err?.response?.data?.message) {
+          ErrorHandler(err?.response?.data?.message, history);
+        } else {
+          Notification('Something went wrong! Please try again later.', 'error');
+        }
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
-    <>
+    <Spin spinning={loading}>
       <Title level={2} className='center'>
         Profile Information
       </Title>
@@ -135,20 +164,6 @@ const Profile = () => {
             </Form.Item>
           </Col>
           <Col xs={24}>
-            <Form.Item
-              name='password'
-              label='Password'
-              labelCol={{ span: 24 }}
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input your Password!',
-                },
-              ]}>
-              <Input.Password />
-            </Form.Item>
-          </Col>
-          <Col xs={24}>
             <Form.Item>
               <Button type='primary' block disabled={loading} htmlType='submit' className='login-form-button'>
                 {loading && <LoadingOutlined />} Update Profile
@@ -157,7 +172,7 @@ const Profile = () => {
           </Col>
         </Row>
       </Form>
-    </>
+    </Spin>
   );
 };
 
