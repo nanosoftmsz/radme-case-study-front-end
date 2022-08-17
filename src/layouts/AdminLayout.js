@@ -13,17 +13,16 @@ const AdminLayout = () => {
   const history = useHistory();
 
   const logout = () => {
+    console.log('click');
     localStorage.clear();
     history.push('/login');
   };
 
   const menu = (
     <Menu>
-      <Link to='/profile'>
-        <Menu.Item key='1' icon={<UserOutlined />}>
-          User Profile
-        </Menu.Item>
-      </Link>
+      <Menu.Item key='1' icon={<UserOutlined />}>
+        User Profile <Link to='/profile' />
+      </Menu.Item>
 
       <Menu.Item key='2' onClick={logout} icon={<LogoutOutlined />}>
         Logout
@@ -45,7 +44,7 @@ const AdminLayout = () => {
       <Layout>
         <Header className='site-layout-sub-header-background '>
           <Link to='/'>RadMe Test Case</Link>
-          <Button className='menu' type='primary' icon={<MenuOutlined />} />
+          {/* <Button className='menu' type='primary' icon={<MenuOutlined />} /> */}
           <Dropdown className='logout-btn' overlay={menu} placement='topRight' arrow>
             <Avatar style={{ backgroundColor: '#039be5' }} icon={<UserOutlined />} />
           </Dropdown>

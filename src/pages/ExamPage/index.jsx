@@ -102,10 +102,10 @@ const ExamPage = () => {
                 </Button>
               </Row>
             </Card>
-            <Row justify='space-between' className='mt-1'>
+            {/* <Row justify='space-between' className='mt-1'>
               <Button type='dashed'>Previous</Button>
               <Button type='primary'>Next</Button>
-            </Row>
+            </Row> */}
           </Col>
         </Row>
       </Spin>
