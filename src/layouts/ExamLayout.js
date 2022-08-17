@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import { Avatar, Button, Drawer, Dropdown, Layout, Menu } from "antd";
-import { LogoutOutlined, MenuOutlined, UserOutlined } from "@ant-design/icons";
-import { Link, useHistory } from "react-router-dom";
+import React, { useState } from 'react';
+import { Avatar, Button, Drawer, Dropdown, Layout, Menu } from 'antd';
+import { LogoutOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 
-import ExamMenuTopics from "../container/ExamMenuTopics";
-import "../styles/Navbar.less";
-import "../styles/Sidebar.less";
+import ExamMenuTopics from '../container/ExamMenuTopics';
+
+import '../styles/Navbar.less';
+import '../styles/Sidebar.less';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -49,15 +50,15 @@ const ExamLayout = ({ children }) => {
         <Header className='site-layout-sub-header-background '>
           <Button className='menu' type='primary' icon={<MenuOutlined />} onClick={openSidenav} />
           <Dropdown className='logout-btn' overlay={menu} placement='topRight' arrow>
-            <Avatar style={{ backgroundColor: "#039be5" }} icon={<UserOutlined />} />
+            <Avatar style={{ backgroundColor: '#039be5' }} icon={<UserOutlined />} />
           </Dropdown>
         </Header>
-        <Content style={{ margin: "24px 24px 0 24px" }}>
-          <div className='site-layout-background' style={{ padding: "12px 24px", minHeight: 800 }}>
+        <Content style={{ margin: '24px 24px 0 24px' }}>
+          <div className='site-layout-background' style={{ padding: '12px 24px', minHeight: 800 }}>
             {children}
           </div>
         </Content>
-        <Footer style={{ textAlign: "center" }}>RadMe ©{new Date().getFullYear()} Created by NanoSoft</Footer>
+        <Footer style={{ textAlign: 'center' }}>RadMe ©{new Date().getFullYear()} Created by NanoSoft</Footer>
       </Layout>
     </Layout>
   );

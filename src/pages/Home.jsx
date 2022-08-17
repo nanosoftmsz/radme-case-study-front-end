@@ -1,71 +1,59 @@
-import React from "react";
-import { Button, Card, Col, Divider, Form, Input, Row, Select, Typography } from "antd";
-import { residencyYear } from "../utils/Constants";
-import { Link } from "react-router-dom";
+import { Button, Card, Col, Form, Input, Row, Spin, Typography } from 'antd';
+import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
-const { Text, Title } = Typography;
-const { Option } = Select;
+import Notification from '../components/controls/Notification';
+import { BaseAPI } from '../utils/Api';
+import ErrorHandler from '../utils/ErrorHandler';
+
+const { Title } = Typography;
 
 const Home = () => {
   const [form] = Form.useForm();
+  const history = useHistory();
+
+  const [loading, setLoading] = useState(false);
 
   const onFinish = (values) => {
-    console.log(values);
+    console.log('im here');
+    setLoading(true);
+
+    const body = {
+      program_name: values.program_name,
+      director_name: values.director_name,
+      director_email: values.director_email,
+    };
+
+    BaseAPI.post('/skill-test/create', body, { headers: { Authorization: `Bearer ${localStorage.getItem('at')}` } })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        if (err?.response?.data?.message) {
+          ErrorHandler(err?.response?.data?.message, history);
+        } else {
+          Notification('Something went wrong! Please try again later', 'error');
+        }
+      })
+      .finally(() => setLoading(false));
   };
   // /exam-interface/1
 
   return (
-    <>
+    <Spin spinning={loading}>
       <Card>
         <Title level={3} className='center'>
           Radiology Skill Test
         </Title>
-
-        <Text>User Information</Text>
-
-        <Form form={form} onSubmit={onFinish} layout='vertical'>
+        <Form form={form} onFinish={onFinish} layout='vertical'>
           <Row gutter={[16, 16]} className='mt-2'>
             <Col xs={24} sm={12} md={8}>
-              <Form.Item name='user_name' label='Name' rules={[{ required: true, message: "Please enter your name" }]}>
+              <Form.Item name='program_name' label='Program Name' rules={[{ required: true, message: 'Please enter program name' }]}>
                 <Input />
               </Form.Item>
             </Col>
             <Col xs={24} sm={12} md={8}>
-              <Form.Item
-                name='user_email'
-                label='Email'
-                rules={[
-                  { required: true, message: "Please enter your email" },
-                  { type: "email", message: "Please enter valid email" },
-                ]}>
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={12} md={8}>
-              <Form.Item name='residency_year' label='Residency Year' rules={[{ required: true, message: "Please enter residency year" }]}>
-                <Select>
-                  {residencyYear.map((el) => (
-                    <Option value={el.id} key={el.id}>
-                      {el.value}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Divider />
-
-          <Text>Program Director Information</Text>
-
-          <Row gutter={[16, 16]} className='mt-2'>
-            <Col xs={24} sm={12} md={8}>
-              <Form.Item name='program_name' label='Program Name' rules={[{ required: true, message: "Please enter program name" }]}>
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={12} md={8}>
-              <Form.Item name='director_name' label='Director Name' rules={[{ required: true, message: "Please enter director name" }]}>
+              <Form.Item name='director_name' label='Director Name' rules={[{ required: true, message: 'Please enter director name' }]}>
                 <Input />
               </Form.Item>
             </Col>
@@ -74,8 +62,8 @@ const Home = () => {
                 name='director_email'
                 label='Email'
                 rules={[
-                  { required: true, message: "Please enter director email" },
-                  { type: "email", message: "Please enter valid email" },
+                  { required: true, message: 'Please enter director email' },
+                  { type: 'email', message: 'Please enter valid email' },
                 ]}>
                 <Input />
               </Form.Item>
@@ -83,11 +71,9 @@ const Home = () => {
           </Row>
 
           <Row justify='center'>
-            <Link to='/exam-interface/1'>
-              <Button type='primary' htmlType='submit'>
-                Start My Exam
-              </Button>
-            </Link>
+            <Button type='primary' htmlType='submit'>
+              Start My Exam
+            </Button>
           </Row>
         </Form>
       </Card>
@@ -104,7 +90,7 @@ const Home = () => {
           <li>The exam will automatically end after 3 hours.</li>
         </ul>
       </Card>
-    </>
+    </Spin>
   );
 };
 

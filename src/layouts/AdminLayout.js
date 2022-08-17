@@ -44,6 +44,7 @@ const AdminLayout = () => {
 
       <Layout>
         <Header className='site-layout-sub-header-background '>
+          <Link to='/'>RadMe Test Case</Link>
           <Button className='menu' type='primary' icon={<MenuOutlined />} />
           <Dropdown className='logout-btn' overlay={menu} placement='topRight' arrow>
             <Avatar style={{ backgroundColor: '#039be5' }} icon={<UserOutlined />} />
