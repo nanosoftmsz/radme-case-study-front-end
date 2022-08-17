@@ -37,7 +37,6 @@ const Home = () => {
       })
       .finally(() => setLoading(false));
   };
-  // /exam-interface/1
 
   return (
     <Spin spinning={loading}>
