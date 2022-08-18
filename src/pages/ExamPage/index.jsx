@@ -65,6 +65,10 @@ const ExamPage = () => {
   const submitAnswer = (values) => {
     const { id, hpi, json_url, labs, vitals } = questionInformation;
 
+    const answerPosition = answerArray.findIndex((el) => el.q_id === +id);
+
+    console.log(answerPosition);
+
     const answerObject = {
       q_id: id,
       hpi,
