@@ -21,8 +21,8 @@ const ExamPage = () => {
   const [answerArray, setAnswerArray] = useState(JSON.parse(getItem(localStorage, 'aa')));
 
   /**
-   * //TODO:
-   * 1. Check if the user has already submitted the answer. If submitted, then set impression and findings value in the fields
+   * // TODO:
+   * 1. Check if the user has already submitted the answer. If submitted, then set impression and findings value in the fields (done)
    * 2. If the user update the answer then replace the impression and findings value in the fields
    * 3. After submitting the answer go to the next question of the list which will be triggered by the "Next" button
    * 4. Same rules applied if the user click "Previous" button. User should go back to previous question of the list
@@ -49,10 +49,15 @@ const ExamPage = () => {
       .finally(() => setLoading(false));
 
     // check if the user has already submitted answer
-    console.log(answerArray);
-    const submittedAnswerObject = answerArray.find((el) => el.q_id === id);
+    const submittedAnswerObject = answerArray.find((el) => el.q_id === +id);
 
-    console.log(submittedAnswerObject);
+    // set already submitted answer to into the fields
+    if (submittedAnswerObject) {
+      form.setFieldsValue({
+        findings: submittedAnswerObject.findings,
+        impression: submittedAnswerObject.impression,
+      });
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
@@ -70,9 +75,9 @@ const ExamPage = () => {
       impression: values.impression,
       skill_test_id: +getItem(localStorage, 'qi'),
     };
-
-    // setAnswerArray([...answerArray, answerObject]);
-    // setItem(localStorage, 'aa', answerArray);
+    setAnswerArray([...answerArray, answerObject]);
+    setItem(localStorage, 'aa', [...answerArray, answerObject]);
+    form.resetFields();
   };
 
   return (
