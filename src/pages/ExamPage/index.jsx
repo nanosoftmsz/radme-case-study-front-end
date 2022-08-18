@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button, Card, Col, Divider, Form, Input, Row, Spin, Typography } from 'antd';
+import moment from 'moment';
 
 import ExamLayout from '../../layouts/ExamLayout';
 import { BaseAPI } from '../../utils/Api';
@@ -19,6 +20,7 @@ const ExamPage = () => {
   const [loading, setLoading] = useState(false);
   const [questionInformation, setQuestionInformation] = useState({});
   const [answerArray, setAnswerArray] = useState(JSON.parse(getItem(localStorage, 'aa')));
+  const [remainingTime, setRemainingTime] = useState("");
 
   /**
    * //TODO:
@@ -33,6 +35,9 @@ const ExamPage = () => {
    */
 
   useEffect(() => {
+    // set timer
+    setTimer();
+
     // get use case information
     setLoading(true);
     BaseAPI.get(`/question/${id}`, { headers: { Authorization: `Bearer ${getItem(localStorage, 'at')}` } })
@@ -57,6 +62,27 @@ const ExamPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
+  const setTimer = () => {
+    setInterval(() => {
+      
+      const distance = moment(getItem(localStorage, 'et')).valueOf() - moment().valueOf();
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      
+      
+      if (minutes < 10 && seconds > 9) setRemainingTime(`0${hours}:0${minutes}:${seconds}`);
+      else if (minutes < 10 && seconds < 9) setRemainingTime(`0${hours}:0${minutes}:0${seconds}`);
+      else if (seconds < 10) setRemainingTime(`0${hours}:${minutes}:0${seconds}`);
+      else setRemainingTime(`0${hours}:${minutes}:${seconds}`);
+
+      if (distance < 0) {
+        setRemainingTime(`00:00:00`);
+      }
+      
+    }, 1000);
+  }
+
   const submitAnswer = (values) => {
     const { id, hpi, json_url, labs, vitals } = questionInformation;
 
@@ -80,7 +106,7 @@ const ExamPage = () => {
       <Spin spinning={loading}>
         <Row gutter={[16]} className='mt-2'>
           <Col xs={12} style={{ display: 'flex', gap: '1em' }}>
-            <Text>Total Time Remaining: 03:00:00</Text>
+            <Text>Total Time Remaining: {remainingTime}</Text>
           </Col>
         </Row>
 

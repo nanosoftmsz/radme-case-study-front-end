@@ -1,6 +1,7 @@
 import { Button, Card, Col, Form, Input, Row, Spin, Typography } from 'antd';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import moment from 'moment';
 
 import Notification from '../components/controls/Notification';
 import { BaseAPI } from '../utils/Api';
@@ -28,6 +29,7 @@ const Home = () => {
       .then((res) => {
         setItem(localStorage, 'qi', res.data.data.id.toString());
         setItem(localStorage, 't', res.data.data.start_time);
+        setItem(localStorage, 'et', `${ moment(res.data.data.start_time).add(20, 'seconds').format('YYYY-MM-DD HH:mm:ss')}`);
 
         getQuestionList();
       })
