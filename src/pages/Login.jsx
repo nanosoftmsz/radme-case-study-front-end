@@ -7,6 +7,7 @@ import { BaseAPI } from '../utils/Api';
 import Notification from '../components/controls/Notification';
 
 import '../styles/PageStyles/Login.less';
+import { setItem } from '../utils/Helper';
 
 const { Header, Content } = Layout;
 
@@ -26,9 +27,9 @@ function Login() {
 
     BaseAPI.post('/auth/login', body)
       .then((res) => {
-        localStorage.setItem('ri', res.data.data.role_id);
-        localStorage.setItem('at', res.data.data.token);
-        localStorage.setItem('i', res.data.data.id);
+        setItem(localStorage, 'ri', res.data.data.role_id.toString());
+        setItem(localStorage, 'at', res.data.data.token);
+        setItem(localStorage, 'i', res.data.data.id.toString());
 
         history.push('/');
       })

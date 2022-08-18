@@ -1,8 +1,9 @@
-import { Avatar, Button, Dropdown, Layout, Menu } from 'antd';
-import { LogoutOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons';
+import { Avatar, Dropdown, Layout, Menu } from 'antd';
+import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { Link, useHistory } from 'react-router-dom';
 
 import AppRoutes from '../routes';
+import { removeAll } from '../utils/Helper';
 
 import '../styles/Navbar.less';
 import '../styles/Sidebar.less';
@@ -13,8 +14,8 @@ const AdminLayout = () => {
   const history = useHistory();
 
   const logout = () => {
-    console.log('click');
-    localStorage.clear();
+    removeAll(localStorage);
+    removeAll(sessionStorage);
     history.push('/login');
   };
 

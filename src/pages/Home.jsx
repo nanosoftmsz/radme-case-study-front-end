@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import Notification from '../components/controls/Notification';
 import { BaseAPI } from '../utils/Api';
 import ErrorHandler from '../utils/ErrorHandler';
+import { getItem, setItem } from '../utils/Helper';
 
 const { Title } = Typography;
 
@@ -23,10 +24,12 @@ const Home = () => {
       director_email: values.director_email,
     };
 
-    BaseAPI.post('/skill-test/create', body, { headers: { Authorization: `Bearer ${localStorage.getItem('at')}` } })
+    BaseAPI.post('/skill-test/create', body, { headers: { Authorization: `Bearer ${getItem(localStorage, 'at')}` } })
       .then((res) => {
-        localStorage.setItem('qi', res.data.data.id);
-        localStorage.setItem('t', res.data.data.start_time);
+        setItem(localStorage, 'qi', res.data.data.id.toString());
+        setItem(localStorage, 't', res.data.data.start_time);
+
+        getQuestionList();
       })
       .catch((err) => {
         if (err?.response?.data?.message) {
@@ -36,6 +39,23 @@ const Home = () => {
         }
       })
       .finally(() => setLoading(false));
+  };
+
+  const getQuestionList = () => {
+    BaseAPI.get('/question', { headers: { Authorization: `Bearer ${getItem(localStorage, 'at')}` } })
+      .then((res) => {
+        const answerArray = [];
+        setItem(localStorage, 'ql', JSON.stringify(res.data.data));
+        setItem(localStorage, 'aa', JSON.stringify(answerArray));
+        history.push(`/exam-interface/${res.data.data[0].id}`);
+      })
+      .catch((err) => {
+        if (err?.response?.data?.message) {
+          ErrorHandler(err?.response?.data?.message, history);
+        } else {
+          Notification('Something went wrong! Please try again later', 'error');
+        }
+      });
   };
 
   return (

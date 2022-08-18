@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Avatar, Button, Drawer, Dropdown, Layout, Menu } from 'antd';
 import { LogoutOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import ExamMenuTopics from '../container/ExamMenuTopics';
+import { removeAll } from '../utils/Helper';
 
 import '../styles/Navbar.less';
 import '../styles/Sidebar.less';
@@ -11,6 +13,8 @@ import '../styles/Sidebar.less';
 const { Header, Content, Footer, Sider } = Layout;
 
 const ExamLayout = ({ children }) => {
+  const history = useHistory();
+
   const [navIsVisible, setNavIsVisible] = useState(false);
 
   const closeSidenav = () => {
@@ -21,6 +25,12 @@ const ExamLayout = ({ children }) => {
     setNavIsVisible(true);
   };
 
+  const logout = () => {
+    removeAll(localStorage);
+    removeAll(sessionStorage);
+    history.push('/login');
+  };
+
   const menu = (
     <Menu>
       <Link to='/profile'>
@@ -29,7 +39,7 @@ const ExamLayout = ({ children }) => {
         </Menu.Item>
       </Link>
 
-      <Menu.Item key='3' icon={<LogoutOutlined />}>
+      <Menu.Item key='3' onClick={logout} icon={<LogoutOutlined />}>
         Logout
       </Menu.Item>
     </Menu>

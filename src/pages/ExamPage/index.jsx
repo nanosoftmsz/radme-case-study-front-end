@@ -6,8 +6,9 @@ import { BaseAPI } from '../../utils/Api';
 import ErrorHandler from '../../utils/ErrorHandler';
 import Notification from '../../components/controls/Notification';
 import { useHistory, useParams } from 'react-router-dom';
+import { getItem } from '../../utils/Helper';
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 const { TextArea } = Input;
 
 const ExamPage = () => {
@@ -19,9 +20,9 @@ const ExamPage = () => {
   const [questionInformation, setQuestionInformation] = useState({});
 
   useEffect(() => {
-    BaseAPI.get(`/question/${id}`, { headers: { Authorization: `Bearer ${localStorage.getItem('at')}` } })
+    setLoading(true);
+    BaseAPI.get(`/question/${id}`, { headers: { Authorization: `Bearer ${getItem(localStorage, 'at')}` } })
       .then((res) => {
-        console.log(res.data.data);
         setQuestionInformation(res.data.data);
       })
       .catch((err) => {
@@ -30,26 +31,34 @@ const ExamPage = () => {
         } else {
           Notification('Something went wrong! Please try again later', 'error');
         }
-      });
-  }, []);
+      })
+      .finally(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   const submitAnswer = (values) => {
-    console.log(values);
+    const { id, hpi, json_url, labs, vitals } = questionInformation;
+
+    const answerObject = {
+      q_id: id,
+      hpi,
+      json_url,
+      labs,
+      vitals,
+      findings: values.findings,
+      impression: values.impression,
+      skill_test_id: +getItem(localStorage, 'qi'),
+    };
+
+    console.log(answerObject);
   };
 
   return (
     <ExamLayout>
       <Spin spinning={loading}>
-        <Title level={3} align='center'>
-          Case Study 1
-        </Title>
-
         <Row gutter={[16]} className='mt-2'>
           <Col xs={12} style={{ display: 'flex', gap: '1em' }}>
-            <Text>Total Time Elapsed: 00:00:12</Text>
-          </Col>
-          <Col xs={12} style={{ display: 'flex', justifyContent: 'end', gap: '1em' }}>
-            <Text>Time Spent: 00:00:12</Text>
+            <Text>Total Time Remaining: 03:00:00</Text>
           </Col>
         </Row>
 
@@ -89,23 +98,24 @@ const ExamPage = () => {
                     </Form.Item>
                   </Col>
                   <Col xs={24} md={12}>
-                    <Form.Item name='impresion' label='Impression' rules={[{ required: true, message: 'Please input impression' }]}>
+                    <Form.Item name='impression' label='Impression' rules={[{ required: true, message: 'Please input impression' }]}>
                       <TextArea />
                     </Form.Item>
                   </Col>
                 </Row>
+                {/* <Row justify='center' className='mt-2'>
+                  <Button type='primary' htmlType='submit'>
+                    Submit Answer
+                  </Button>
+                </Row> */}
+                <Row justify='space-between' className='mt-1'>
+                  <Button type='dashed'>Previous</Button>
+                  <Button type='primary' htmlType='submit'>
+                    Next
+                  </Button>
+                </Row>
               </Form>
-
-              <Row justify='center' className='mt-2'>
-                <Button type='primary' onClick={submitAnswer}>
-                  Submit Answer
-                </Button>
-              </Row>
             </Card>
-            {/* <Row justify='space-between' className='mt-1'>
-              <Button type='dashed'>Previous</Button>
-              <Button type='primary'>Next</Button>
-            </Row> */}
           </Col>
         </Row>
       </Spin>

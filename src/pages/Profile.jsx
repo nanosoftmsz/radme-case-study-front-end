@@ -8,6 +8,7 @@ import ErrorHandler from '../utils/ErrorHandler';
 import Notification from '../components/controls/Notification';
 import { Country, MedicalSchools, residencyYear } from '../utils/Constants';
 import moment from 'moment';
+import { getItem } from '../utils/Helper';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -21,9 +22,8 @@ const Profile = () => {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      BaseAPI.get(`/auth/profile/${localStorage.getItem('i')}`, { headers: { Authorization: `Bearer ${localStorage.getItem('at')}` } })
+      BaseAPI.get(`/auth/profile/${getItem(localStorage, 'i')}`, { headers: { Authorization: `Bearer ${getItem(localStorage, 'at')}` } })
         .then((res) => {
-          console.log(res.data.data);
           form.setFieldsValue({
             f_name: res.data.data.user_info.f_name,
             l_name: res.data.data.user_info.l_name,
@@ -64,7 +64,7 @@ const Profile = () => {
       image: 'https://res.cloudinary.com/dprw5csz6/image/upload/v1629142999/360_F_346936114_RaxE6OQogebgAWTalE1myseY1Hbb5qPM_x59s0i.jpg',
     };
 
-    BaseAPI.patch('/auth/profile', body, { headers: { Authorization: `Bearer ${localStorage.getItem('at')}` } })
+    BaseAPI.patch('/auth/profile', body, { headers: { Authorization: `Bearer ${getItem(localStorage, 'at')}` } })
       .then(() => {
         Notification('Profile information updated successfully!', 'success');
       })
