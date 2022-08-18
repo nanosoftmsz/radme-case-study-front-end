@@ -6,7 +6,7 @@ import { BaseAPI } from '../../utils/Api';
 import ErrorHandler from '../../utils/ErrorHandler';
 import Notification from '../../components/controls/Notification';
 import { useHistory, useParams } from 'react-router-dom';
-import { getItem } from '../../utils/Helper';
+import { getItem, setItem } from '../../utils/Helper';
 
 const { Text } = Typography;
 const { TextArea } = Input;
@@ -18,8 +18,22 @@ const ExamPage = () => {
 
   const [loading, setLoading] = useState(false);
   const [questionInformation, setQuestionInformation] = useState({});
+  const [answerArray, setAnswerArray] = useState(JSON.parse(getItem(localStorage, 'aa')));
+
+  /**
+   * //TODO:
+   * 1. Check if the user has already submitted the answer. If submitted, then set impression and findings value in the fields
+   * 2. If the user update the answer then replace the impression and findings value in the fields
+   * 3. After submitting the answer go to the next question of the list which will be triggered by the "Next" button
+   * 4. Same rules applied if the user click "Previous" button. User should go back to previous question of the list
+   * 5. Calculate 3 hours countdown time.
+   * 6. If 3 hours passed then user will get a prompt about sumitting answer as his time is up. User can't close the prompt unless submitting the answer
+   * 7. User can close the exam any time he wants. Then a prompt will show if the user surely close the answer. Upon clicking "YES" button answers will be submitted
+   * and user will be redirected to home page
+   */
 
   useEffect(() => {
+    // get use case information
     setLoading(true);
     BaseAPI.get(`/question/${id}`, { headers: { Authorization: `Bearer ${getItem(localStorage, 'at')}` } })
       .then((res) => {
@@ -33,6 +47,13 @@ const ExamPage = () => {
         }
       })
       .finally(() => setLoading(false));
+
+    // check if the user has already submitted answer
+    console.log(answerArray);
+    const submittedAnswerObject = answerArray.find((el) => el.q_id === id);
+
+    console.log(submittedAnswerObject);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
@@ -50,7 +71,8 @@ const ExamPage = () => {
       skill_test_id: +getItem(localStorage, 'qi'),
     };
 
-    console.log(answerObject);
+    // setAnswerArray([...answerArray, answerObject]);
+    // setItem(localStorage, 'aa', answerArray);
   };
 
   return (
