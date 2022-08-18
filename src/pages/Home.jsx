@@ -1,12 +1,12 @@
 import { Button, Card, Col, Form, Input, Row, Spin, Typography } from 'antd';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 
 import Notification from '../components/controls/Notification';
 import { BaseAPI } from '../utils/Api';
 import ErrorHandler from '../utils/ErrorHandler';
-import { getItem, setItem } from '../utils/Helper';
+import { getItem, setItem, removeItem } from '../utils/Helper';
 
 const { Title } = Typography;
 
@@ -15,6 +15,15 @@ const Home = () => {
   const history = useHistory();
 
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setItem(localStorage, 'aa', JSON.stringify([]));
+    removeItem(localStorage, 'ql');
+    removeItem(localStorage, 'ql');
+    removeItem(localStorage, 'qi');
+    removeItem(localStorage, 'st');
+    removeItem(localStorage, 'et');
+  }, [])
 
   const onFinish = (values) => {
     setLoading(true);
@@ -28,8 +37,8 @@ const Home = () => {
     BaseAPI.post('/skill-test/create', body, { headers: { Authorization: `Bearer ${getItem(localStorage, 'at')}` } })
       .then((res) => {
         setItem(localStorage, 'qi', res.data.data.id.toString());
-        setItem(localStorage, 't', res.data.data.start_time);
-        setItem(localStorage, 'et', `${ moment(res.data.data.start_time).add(20, 'seconds').format('YYYY-MM-DD HH:mm:ss')}`);
+        setItem(localStorage, 'st', res.data.data.start_time);
+        setItem(localStorage, 'et', `${ moment(res.data.data.start_time).add(10, 'minutes').format('YYYY-MM-DD HH:mm:ss')}`);
 
         getQuestionList();
       })
@@ -46,9 +55,7 @@ const Home = () => {
   const getQuestionList = () => {
     BaseAPI.get('/question', { headers: { Authorization: `Bearer ${getItem(localStorage, 'at')}` } })
       .then((res) => {
-        const answerArray = [];
         setItem(localStorage, 'ql', JSON.stringify(res.data.data));
-        setItem(localStorage, 'aa', JSON.stringify(answerArray));
         history.push(`/exam-interface/${res.data.data[0].id}`);
       })
       .catch((err) => {

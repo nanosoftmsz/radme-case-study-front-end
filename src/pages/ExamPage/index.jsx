@@ -1,13 +1,23 @@
-import { useEffect, useState } from 'react';
-import { Button, Card, Col, Divider, Form, Input, Row, Spin, Typography } from 'antd';
-import moment from 'moment';
+import { useEffect, useState } from "react";
+import {
+  Button,
+  Card,
+  Col,
+  Divider,
+  Form,
+  Input,
+  Row,
+  Spin,
+  Typography,
+} from "antd";
+import moment from "moment";
 
-import ExamLayout from '../../layouts/ExamLayout';
-import { BaseAPI } from '../../utils/Api';
-import ErrorHandler from '../../utils/ErrorHandler';
-import Notification from '../../components/controls/Notification';
-import { useHistory, useParams } from 'react-router-dom';
-import { getItem, setItem } from '../../utils/Helper';
+import ExamLayout from "../../layouts/ExamLayout";
+import { BaseAPI } from "../../utils/Api";
+import ErrorHandler from "../../utils/ErrorHandler";
+import Notification from "../../components/controls/Notification";
+import { useHistory, useParams } from "react-router-dom";
+import { getItem, setItem } from "../../utils/Helper";
 
 const { Text } = Typography;
 const { TextArea } = Input;
@@ -19,8 +29,9 @@ const ExamPage = () => {
 
   const [loading, setLoading] = useState(false);
   const [questionInformation, setQuestionInformation] = useState({});
-  const [answerArray, setAnswerArray] = useState(JSON.parse(getItem(localStorage, 'aa')));
   const [remainingTime, setRemainingTime] = useState("");
+  const [findingsInfo, setFindingsInfo] = useState("");
+  const [impressionInfo, setImpressionInfo] = useState("");
 
   /**
    * // TODO:
@@ -40,7 +51,9 @@ const ExamPage = () => {
 
     // get use case information
     setLoading(true);
-    BaseAPI.get(`/question/${id}`, { headers: { Authorization: `Bearer ${getItem(localStorage, 'at')}` } })
+    BaseAPI.get(`/question/${id}`, {
+      headers: { Authorization: `Bearer ${getItem(localStorage, "at")}` },
+    })
       .then((res) => {
         setQuestionInformation(res.data.data);
       })
@@ -48,13 +61,15 @@ const ExamPage = () => {
         if (err?.response?.data?.message) {
           ErrorHandler(err?.response?.data?.message, history);
         } else {
-          Notification('Something went wrong! Please try again later', 'error');
+          Notification("Something went wrong! Please try again later", "error");
         }
       })
       .finally(() => setLoading(false));
 
     // check if the user has already submitted answer
-    const submittedAnswerObject = answerArray.find((el) => el.q_id === +id);
+    const submittedAnswerObject = [
+      ...JSON.parse(getItem(localStorage, "aa")),
+    ].find((el) => el.q_id === +id);
 
     // set already submitted answer to into the fields
     if (submittedAnswerObject) {
@@ -69,57 +84,80 @@ const ExamPage = () => {
 
   const setTimer = () => {
     setInterval(() => {
-      
-      const distance = moment(getItem(localStorage, 'et')).valueOf() - moment().valueOf();
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const distance =
+        moment(getItem(localStorage, "et")).valueOf() - moment().valueOf();
+      const hours = Math.floor(
+        (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+      );
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-      
-      
-      if (minutes < 10 && seconds > 9) setRemainingTime(`0${hours}:0${minutes}:${seconds}`);
-      else if (minutes < 10 && seconds < 9) setRemainingTime(`0${hours}:0${minutes}:0${seconds}`);
-      else if (seconds < 10) setRemainingTime(`0${hours}:${minutes}:0${seconds}`);
+
+      if (minutes < 10 && seconds > 9)
+        setRemainingTime(`0${hours}:0${minutes}:${seconds}`);
+      else if (minutes < 10 && seconds < 9)
+        setRemainingTime(`0${hours}:0${minutes}:0${seconds}`);
+      else if (seconds < 10)
+        setRemainingTime(`0${hours}:${minutes}:0${seconds}`);
       else setRemainingTime(`0${hours}:${minutes}:${seconds}`);
 
       if (distance < 0) {
         setRemainingTime(`00:00:00`);
       }
-      
     }, 1000);
-  }
+  };
 
   const submitAnswer = (values) => {
-    const { id, hpi, json_url, labs, vitals } = questionInformation;
+    const QusSet = JSON.parse(getItem(localStorage, "ql"));
+    const currentPos = QusSet.findIndex((el) => el.id === +id);
 
-    const answerPosition = answerArray.findIndex((el) => el.q_id === +id);
-
-    console.log(answerPosition);
-
-    const answerObject = {
-      q_id: id,
-      hpi,
-      json_url,
-      labs,
-      vitals,
-      findings: values.findings,
-      impression: values.impression,
-      skill_test_id: +getItem(localStorage, 'qi'),
-    };
-    setAnswerArray([...answerArray, answerObject]);
-    setItem(localStorage, 'aa', [...answerArray, answerObject]);
     form.resetFields();
+
+    if (values === "previous") {
+      history.push(`/exam-interface/${QusSet[currentPos - 1].id}`);
+    } else {
+      const { hpi, json_url, labs, vitals } = questionInformation;
+
+      const answerArray = [...JSON.parse(getItem(localStorage, "aa"))];
+      const answerPosition = answerArray.findIndex((el) => el.q_id === +id);
+
+      if (answerPosition === -1) {
+        answerArray.push({
+          q_id: questionInformation.id,
+          hpi,
+          json_url,
+          labs,
+          vitals,
+          findings: findingsInfo,
+          impression: impressionInfo,
+          skill_test_id: +getItem(localStorage, "qi"),
+        });
+      } else {
+        answerArray[answerPosition].findings = findingsInfo;
+        answerArray[answerPosition].impression = impressionInfo;
+      }
+
+      setItem(localStorage, "aa", JSON.stringify([...answerArray]));
+      setFindingsInfo("");
+      setImpressionInfo("");
+
+      if (values === "submit") {
+        console.log("submit", answerArray);
+      } else {
+        history.push(`/exam-interface/${QusSet[currentPos + 1].id}`);
+      }
+    }
   };
 
   return (
     <ExamLayout>
       <Spin spinning={loading}>
-        <Row gutter={[16]} className='mt-2'>
-          <Col xs={12} style={{ display: 'flex', gap: '1em' }}>
+        <Row gutter={[16]} className="mt-2">
+          <Col xs={12} style={{ display: "flex", gap: "1em" }}>
             <Text>Total Time Remaining: {remainingTime}</Text>
           </Col>
         </Row>
 
-        <Row className='mt-1'>
+        <Row className="mt-1">
           <Col xs={24}>
             <Card>
               <ul>
@@ -137,26 +175,35 @@ const ExamPage = () => {
 
             {questionInformation.json_url && (
               <Row>
-                <Col xs={24} className='mt-1'>
-                  <embed src={questionInformation.json_url} style={{ width: '100%', height: '700px' }} />
+                <Col xs={24} className="mt-1">
+                  <embed
+                    src={questionInformation.json_url}
+                    style={{ width: "100%", height: "700px" }}
+                  />
                 </Col>
               </Row>
             )}
 
             <Card>
-              <Divider orientation='left' className='mt-1'>
+              <Divider orientation="left" className="mt-1">
                 Answer Below
               </Divider>
-              <Form form={form} onFinish={submitAnswer} layout='vertical'>
+              <Form form={form} layout="vertical">
                 <Row gutter={[16]}>
                   <Col xs={24} md={12}>
-                    <Form.Item name='findings' label='Findings' rules={[{ required: true, message: 'Please input findings' }]}>
-                      <TextArea />
+                    <Form.Item name="findings" label="Findings">
+                      <TextArea
+                        onChange={(e) => setFindingsInfo(e.target.value)}
+                        value={findingsInfo}
+                      />
                     </Form.Item>
                   </Col>
                   <Col xs={24} md={12}>
-                    <Form.Item name='impression' label='Impression' rules={[{ required: true, message: 'Please input impression' }]}>
-                      <TextArea />
+                    <Form.Item name="impression" label="Impression">
+                      <TextArea
+                        onChange={(e) => setImpressionInfo(e.target.value)}
+                        value={impressionInfo}
+                      />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -165,10 +212,33 @@ const ExamPage = () => {
                     Submit Answer
                   </Button>
                 </Row> */}
-                <Row justify='space-between' className='mt-1'>
-                  <Button type='dashed'>Previous</Button>
-                  <Button type='primary' htmlType='submit'>
-                    Next
+                <Row justify="space-between" className="mt-1">
+                  <Button
+                    type="dashed"
+                    disabled={
+                      JSON.parse(getItem(localStorage, "ql"))[0].id === +id
+                    }
+                    onClick={() => submitAnswer("previous")}
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    type="primary"
+                    onClick={() =>
+                      submitAnswer(
+                        JSON.parse(getItem(localStorage, "ql"))[
+                          JSON.parse(getItem(localStorage, "ql")).length - 1
+                        ].id === +id
+                          ? "submit"
+                          : "next"
+                      )
+                    }
+                  >
+                    {JSON.parse(getItem(localStorage, "ql"))[
+                      JSON.parse(getItem(localStorage, "ql")).length - 1
+                    ].id === +id
+                      ? "Submit"
+                      : "Next"}
                   </Button>
                 </Row>
               </Form>
