@@ -32,30 +32,18 @@ const AdminLayout = () => {
 
   return (
     <Layout>
-      {/* <Drawer title='RadMe' placement='left' onClose={closeSidenav} visible={navIsVisible}>
-        <MenuTopics onClick={closeSidenav} />
-      </Drawer> */}
-
-      {/* <Sider breakpoint='lg' collapsedWidth='0' trigger={null} className='sidebar-layout'>
-        <div className='logo'>RadMe</div>
-        <MenuTopics onClick={() => {}} />
-      </Sider> */}
-
-      <Layout>
-        <Header className='site-layout-sub-header-background '>
-          <Link to='/'>RadMe Test Case</Link>
-          {/* <Button className='menu' type='primary' icon={<MenuOutlined />} /> */}
-          <Dropdown className='logout-btn' overlay={menu} placement='topRight' arrow>
-            <Avatar style={{ backgroundColor: '#039be5' }} icon={<UserOutlined />} />
-          </Dropdown>
-        </Header>
-        <Content style={{ margin: '24px 24px 0 24px' }}>
-          <div className='site-layout-background'>
-            <AppRoutes />
-          </div>
-        </Content>
-        <Footer style={{ textAlign: 'center' }}>RadMe ©{new Date().getFullYear()} Created by NanoSoft</Footer>
-      </Layout>
+      <Header className='site-layout-sub-header-background '>
+        <Link to='/'>RadMe Test Case</Link>
+        <Dropdown className='logout-btn' overlay={menu} placement='topRight' arrow>
+          <Avatar style={{ backgroundColor: '#039be5' }} icon={<UserOutlined />} />
+        </Dropdown>
+      </Header>
+      <Content style={{ margin: '24px 24px 0 24px' }}>
+        <div className='site-layout-background'>
+          <AppRoutes />
+        </div>
+      </Content>
+      <Footer style={{ textAlign: 'center' }}>RadMe ©{new Date().getFullYear()} Created by NanoSoft</Footer>
     </Layout>
   );
 };
