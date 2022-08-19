@@ -128,11 +128,8 @@ const ExamPage = () => {
 
   const submitTest = () => {
     const answers = JSON.parse(getItem(localStorage, 'aa'));
-    const body = {
-      answers,
-    };
-    console.log(body);
-    BaseAPI.post('/skill-test/create', body, { headers: { Authorization: `Bearer ${getItem(localStorage, 'at')}` } })
+
+    BaseAPI.post('/skill-test/create', { answers }, { headers: { Authorization: `Bearer ${getItem(localStorage, 'at')}` } })
       .then(() => {
         Notification('Thank you for taking the exam!', 'success');
         history.push('/');
