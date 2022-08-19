@@ -64,7 +64,7 @@ const ExamLayout = ({ children }) => {
           </Dropdown>
         </Header>
         <Content style={{ margin: '24px 24px 0 24px' }}>
-          <div className='site-layout-background' style={{ padding: '12px 24px', minHeight: 800 }}>
+          <div className='site-layout-background' style={{ padding: '5px', minHeight: 800 }}>
             {children}
           </div>
         </Content>
