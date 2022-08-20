@@ -128,6 +128,7 @@ const ExamPage = () => {
   };
 
   const submitTest = () => {
+    setLoading(true);
     const answers = JSON.parse(getItem(localStorage, 'aa'));
 
     BaseAPI.post('/skill-test/submit', { answers }, { headers: { Authorization: `Bearer ${getItem(localStorage, 'at')}` } })
@@ -141,7 +142,8 @@ const ExamPage = () => {
         } else {
           Notification('Something went wrong submitting the answers!', 'error');
         }
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
