@@ -223,7 +223,7 @@ const ExamPage = () => {
           {testEndType === 'submit' && <p>Congratulations!!! You have answered all the questions. </p>}
           {testEndType === 'end' && <p>It's sad to end your exam in middle. No worries. Your already answered questions will be counted. </p>}
 
-          <Row justify='center'>
+          <Row justify='center' className='mt-2'>
             {testEndType === 'end' && (
               <Button onClick={() => setIsModalVisible(false)} style={{ marginRight: '1em' }}>
                 I Want To Continue
