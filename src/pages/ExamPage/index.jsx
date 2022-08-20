@@ -86,7 +86,7 @@ const ExamPage = () => {
     if (values === 'previous') {
       history.push(`/exam-interface/${QusSet[currentPos - 1].id}`);
     } else {
-      const { hpi, json_url, labs, vitals } = questionInformation;
+      const { hpi, json_url, labs, vitals, modality } = questionInformation;
 
       const answerArray = [...JSON.parse(getItem(localStorage, 'aa'))];
       const answerPosition = answerArray.findIndex((el) => el.q_id === +id);
@@ -98,6 +98,7 @@ const ExamPage = () => {
           json_url,
           labs,
           vitals,
+          modality,
           findings: findingsInfo,
           impression: impressionInfo,
           skill_test_id: +getItem(localStorage, 'qi'),
@@ -129,7 +130,7 @@ const ExamPage = () => {
   const submitTest = () => {
     const answers = JSON.parse(getItem(localStorage, 'aa'));
 
-    BaseAPI.post('/skill-test/create', { answers }, { headers: { Authorization: `Bearer ${getItem(localStorage, 'at')}` } })
+    BaseAPI.post('/skill-test/submit', { answers }, { headers: { Authorization: `Bearer ${getItem(localStorage, 'at')}` } })
       .then(() => {
         Notification('Thank you for taking the exam!', 'success');
         history.push('/');
