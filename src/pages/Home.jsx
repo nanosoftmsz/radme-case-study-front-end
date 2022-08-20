@@ -19,11 +19,10 @@ const Home = () => {
   useEffect(() => {
     setItem(localStorage, 'aa', JSON.stringify([]));
     removeItem(localStorage, 'ql');
-    removeItem(localStorage, 'ql');
     removeItem(localStorage, 'qi');
     removeItem(localStorage, 'st');
     removeItem(localStorage, 'et');
-  }, [])
+  }, []);
 
   const onFinish = (values) => {
     setLoading(true);
@@ -38,7 +37,7 @@ const Home = () => {
       .then((res) => {
         setItem(localStorage, 'qi', res.data.data.id.toString());
         setItem(localStorage, 'st', res.data.data.start_time);
-        setItem(localStorage, 'et', `${ moment(res.data.data.start_time).add(10, 'minutes').format('YYYY-MM-DD HH:mm:ss')}`);
+        setItem(localStorage, 'et', `${moment(res.data.data.start_time).add(10, 'minutes').format('YYYY-MM-DD HH:mm:ss')}`);
 
         getQuestionList();
       })
