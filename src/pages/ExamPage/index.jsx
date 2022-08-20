@@ -222,6 +222,12 @@ const ExamPage = () => {
           {testEndType === 'end' && <p>It's sad to end your exam in middle. No worries. Your already answered questions will be counted. </p>}
 
           <Row justify='center'>
+            {testEndType === 'end' && (
+              <Button type='primary' onClick={() => setIsModalVisible(false)}>
+                I Want To Continue
+              </Button>
+            )}
+
             <Button type='primary' onClick={submitTest}>
               Submit Answer
             </Button>
