@@ -225,7 +225,7 @@ const ExamPage = () => {
 
           <Row justify='center'>
             {testEndType === 'end' && (
-              <Button type='primary' onClick={() => setIsModalVisible(false)}>
+              <Button onClick={() => setIsModalVisible(false)} style={{ marginRight: '1em' }}>
                 I Want To Continue
               </Button>
             )}
