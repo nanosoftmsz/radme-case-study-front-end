@@ -4,7 +4,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { useHistory, Link } from 'react-router-dom';
 import moment from 'moment';
 
-import { FellowStatus, MedicalGraduateStatus, MedicalStudentStatus, residencyYear, ResidentStatus, TrainingStatus } from '../utils/Constants';
+import { FellowStatus, MedicalGraduateStatus, MedicalStudentStatus, ResidentStatus, TrainingStatus } from '../utils/Constants';
 import Notification from '../components/controls/Notification';
 import { BaseAPI } from '../utils/Api';
 
