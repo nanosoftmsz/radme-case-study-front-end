@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Form, Input, Button, Layout, Select, DatePicker, Row, Col, Radio } from 'antd';
+import { Form, Input, Button, Layout, Select, DatePicker, Row, Col } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useHistory, Link } from 'react-router-dom';
 import moment from 'moment';
 
-import { Country, MedicalSchools, residencyYear } from '../utils/Constants';
+import { FellowStatus, MedicalGraduateStatus, MedicalStudentStatus, residencyYear, ResidentStatus, TrainingStatus } from '../utils/Constants';
 import Notification from '../components/controls/Notification';
 import { BaseAPI } from '../utils/Api';
 
@@ -18,6 +18,22 @@ const Register = () => {
   const history = useHistory();
 
   const [loading, setLoading] = useState(false);
+  const [trainingLevel, setTrainingLevel] = useState(null);
+
+  const handleTrainingStatusChange = (value) => {
+    console.log(value);
+    if (value === 'Medical Student') {
+      setTrainingLevel(MedicalStudentStatus);
+    } else if (value === 'Resident') {
+      setTrainingLevel(ResidentStatus);
+    } else if (value === 'Fellow') {
+      setTrainingLevel(FellowStatus);
+    } else if (value === 'Medical Graduate') {
+      setTrainingLevel(MedicalGraduateStatus);
+    } else {
+      setTrainingLevel(null);
+    }
+  };
 
   const onFinish = (values) => {
     setLoading(true);
@@ -88,21 +104,7 @@ const Register = () => {
             </Col>
             <Col xs={24}>
               <Form.Item name='med_school' label='Medical School' rules={[{ required: true, message: 'Please select a medical school' }]}>
-                <Select>
-                  {MedicalSchools.map((el, i) => (
-                    <Option key={i} value={el}>
-                      {el}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col xs={24}>
-              <Form.Item name='gender' label='Select Gender' rules={[{ required: true, message: 'Please select your gender' }]}>
-                <Radio.Group>
-                  <Radio value='male'>Male</Radio>
-                  <Radio value='female'>Female</Radio>
-                </Radio.Group>
+                <Input />
               </Form.Item>
             </Col>
             <Col xs={24}>
@@ -111,32 +113,78 @@ const Register = () => {
               </Form.Item>
             </Col>
             <Col xs={24}>
-              <Form.Item name='graduation_year' label='Graduation Year' rules={[{ required: true, message: 'Please select graduation year' }]}>
+              <Form.Item name='graduation_year' label='Medical School Graduation Year' rules={[{ required: true, message: 'Please select graduation year' }]}>
                 <DatePicker style={{ width: '100%' }} picker='year' />
               </Form.Item>
             </Col>
+
             <Col xs={24}>
-              <Form.Item name='residency_year' label='Residency Year' rules={[{ required: true, message: 'Please select residency year' }]}>
-                <Select>
-                  {residencyYear.map((el) => (
-                    <Option key={el.id} value={el.id}>
-                      {el.value}
+              <Form.Item name='training_status' label='Training Status' rules={[{ required: true, message: 'Please select training status' }]}>
+                <Select allowClear onChange={handleTrainingStatusChange}>
+                  {TrainingStatus.map((el) => (
+                    <Option key={el} value={el}>
+                      {el}
                     </Option>
                   ))}
                 </Select>
               </Form.Item>
             </Col>
+            {trainingLevel && (
+              <Col xs={24}>
+                <Form.Item name='training_level' label='Training Level' rules={[{ required: true, message: 'Please select training level' }]}>
+                  <Select>
+                    {trainingLevel?.map((el) => (
+                      <Option key={el} value={el}>
+                        {el}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+            )}
             <Col xs={24}>
-              <Form.Item name='country' label='Country' rules={[{ required: true, message: 'Please select country' }]}>
-                <Select optionFilterProp='children' showSearch allowClear>
-                  {Country.map((el) => (
-                    <Option key={el.code} value={el.name}>
-                      {el.name}
-                    </Option>
-                  ))}
-                </Select>
+              <Form.Item name='specialty' label='Specialty' rules={[{ required: true, message: 'Specialty is required' }]}>
+                <Select></Select>
               </Form.Item>
             </Col>
+            <Col xs={24}>
+              <Form.Item name='program_name' label='Program Name' rules={[{ required: true, message: 'Program name is required' }]}>
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col xs={24}>
+              <Form.Item name='director_name' label='Director Name' rules={[{ required: true, message: 'Director name is required' }]}>
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col xs={24}>
+              <Form.Item
+                name='director_email'
+                label='Director Email'
+                rules={[
+                  { required: true, message: 'Director email is required' },
+                  { type: 'email', message: 'Email is not valid' },
+                ]}>
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col xs={24}>
+              <Form.Item name='director_name' label='Director Name' rules={[{ required: true, message: 'Director name is required' }]}>
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col xs={24}>
+              <Form.Item
+                name='director_email'
+                label='Director Email'
+                rules={[
+                  { required: true, message: 'Director email is required' },
+                  { type: 'email', message: 'Email is not valid' },
+                ]}>
+                <Input />
+              </Form.Item>
+            </Col>
+
             <Col xs={24}>
               <Form.Item
                 name='password'

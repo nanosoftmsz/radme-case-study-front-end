@@ -79,6 +79,16 @@ export const residencyYear = [
 
 export const MedicalSchools = ['Medical college of Wisconsin', 'Baylor college of medicine'];
 
+export const TrainingStatus = ['Medical Student', 'Resident', 'Fellow', 'Practical Physician', 'Medical Graduate'];
+
+export const MedicalStudentStatus = ['MS1', 'MS2', 'MS3', 'MS4', 'MS5', 'MS6'];
+
+export const ResidentStatus = ['PG1', 'PG2', 'PG3', 'PG4', 'PG5', 'PG6', 'PG7'];
+
+export const FellowStatus = ['FY1', 'FY2', 'FY3', 'FY4'];
+
+export const MedicalGraduateStatus = ['Seeking To Match', 'Seeking Alternative Pathway Radiology Fellowship'];
+
 export const Country = [
   { name: 'Afghanistan', code: 'AF' },
   { name: 'Åland Islands', code: 'AX' },
