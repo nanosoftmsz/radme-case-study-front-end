@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Card, Col, Divider, Form, Input, Modal, Row, Spin, Typography } from 'antd';
+import { Button, Card, Col, Divider, Form, Input, message, Modal, Row, Spin, Typography } from 'antd';
 import { StopTwoTone } from '@ant-design/icons';
 import moment from 'moment';
 
@@ -128,22 +128,26 @@ const ExamPage = () => {
   };
 
   const submitTest = () => {
-    setLoading(true);
     const answers = JSON.parse(getItem(localStorage, 'aa'));
-
-    BaseAPI.post('/skill-test/submit', { answers }, { headers: { Authorization: `Bearer ${getItem(localStorage, 'at')}` } })
-      .then(() => {
-        Notification('Thank you for taking the exam!', 'success');
-        history.push('/');
-      })
-      .catch((err) => {
-        if (err?.response?.data?.message) {
-          ErrorHandler(err?.response?.data?.message, history);
-        } else {
-          Notification('Something went wrong submitting the answers!', 'error');
-        }
-      })
-      .finally(() => setLoading(false));
+    if (answers === null || answers === '') {
+      setIsModalVisible(false);
+      message.error('You have not submitted any answer');
+    } else {
+      setLoading(true);
+      BaseAPI.post('/skill-test/submit', { answers }, { headers: { Authorization: `Bearer ${getItem(localStorage, 'at')}` } })
+        .then(() => {
+          Notification('Thank you for taking the exam!', 'success');
+          history.push('/');
+        })
+        .catch((err) => {
+          if (err?.response?.data?.message) {
+            ErrorHandler(err?.response?.data?.message, history);
+          } else {
+            Notification('Something went wrong submitting the answers!', 'error');
+          }
+        })
+        .finally(() => setLoading(false));
+    }
   };
 
   return (
