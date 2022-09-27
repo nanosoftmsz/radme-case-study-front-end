@@ -129,7 +129,7 @@ const ExamPage = () => {
 
   const submitTest = () => {
     const answers = JSON.parse(getItem(localStorage, 'aa'));
-    if (answers === null || answers === '') {
+    if (answers === null || answers.length === 0) {
       setIsModalVisible(false);
       message.error('You have not submitted any answer');
     } else {
